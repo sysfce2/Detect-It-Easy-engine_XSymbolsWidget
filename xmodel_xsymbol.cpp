@@ -21,7 +21,7 @@
 
 #include "xmodel_xsymbol.h"
 
-XModel_XSymbol::XModel_XSymbol(XInfoDB *pXInfoDB, XBinary::FT fileType, XInfoDB::SYMBOL_MODE symbolMode, QObject *pParent) : XModel(pParent)
+XModel_XInfoDBSymbol::XModel_XInfoDBSymbol(XInfoDB *pXInfoDB, XBinary::FT fileType, XInfoDB::SYMBOL_MODE symbolMode, QObject *pParent) : XModel(pParent)
 {
     m_pXInfoDB = pXInfoDB;
     m_fileType = fileType;
@@ -53,7 +53,7 @@ XModel_XSymbol::XModel_XSymbol(XInfoDB *pXInfoDB, XBinary::FT fileType, XInfoDB:
     setColumnSymbolSize(COLUMN_REGION, nMaxRegionNameLength);
 }
 
-QVariant XModel_XSymbol::data(const QModelIndex &index, int nRole) const
+QVariant XModel_XInfoDBSymbol::data(const QModelIndex &index, int nRole) const
 {
     QVariant result;
 
@@ -121,7 +121,7 @@ QVariant XModel_XSymbol::data(const QModelIndex &index, int nRole) const
     return result;
 }
 
-QVariant XModel_XSymbol::headerData(int nSection, Qt::Orientation orientation, int nRole) const
+QVariant XModel_XInfoDBSymbol::headerData(int nSection, Qt::Orientation orientation, int nRole) const
 {
     QVariant result;
 
@@ -152,7 +152,7 @@ QVariant XModel_XSymbol::headerData(int nSection, Qt::Orientation orientation, i
     return result;
 }
 
-XModel::SORT_METHOD XModel_XSymbol::getSortMethod(qint32 nColumn)
+XModel::SORT_METHOD XModel_XInfoDBSymbol::getSortMethod(qint32 nColumn)
 {
     SORT_METHOD result = SORT_METHOD_DEFAULT;
 

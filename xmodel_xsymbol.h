@@ -19,13 +19,13 @@
  * SOFTWARE.
  */
 
-#ifndef XMODEL_XSYMBOL_H
-#define XMODEL_XSYMBOL_H
+#ifndef XMODEL_XINFODBSYMBOL_H
+#define XMODEL_XINFODBSYMBOL_H
 
 #include "xmodel.h"
 #include "xinfodb.h"
 
-class XModel_XSymbol : public XModel {
+class XModel_XInfoDBSymbol : public XModel {
     Q_OBJECT
 
 public:
@@ -39,7 +39,7 @@ public:
         __COLUMN_SIZE
     };
 
-    explicit XModel_XSymbol(XInfoDB *pXInfoDB, XBinary::FT fileType, XInfoDB::SYMBOL_MODE symbolMode, QObject *pParent = nullptr);
+    explicit XModel_XInfoDBSymbol(XInfoDB *pXInfoDB, XBinary::FT fileType, XInfoDB::SYMBOL_MODE symbolMode, QObject *pParent = nullptr);
 
     virtual QVariant data(const QModelIndex &index, int nRole = Qt::DisplayRole) const;
     virtual QVariant headerData(int nSection, Qt::Orientation orientation, int nRole = Qt::DisplayRole) const;
@@ -54,4 +54,4 @@ private:
     XBinary::MODE m_modeOffset;
 };
 
-#endif  // XMODEL_XSYMBOL_H
+#endif  // XMODEL_XINFODBSYMBOL_H

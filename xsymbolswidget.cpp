@@ -61,7 +61,7 @@ void XSymbolsWidget::reload()
         // XBinary::DM disasmMode = g_options.disasmMode;
 
         if (m_pXInfoDB->getState(fileType)) {
-            XModel_XSymbol *pModel = new XModel_XSymbol(m_pXInfoDB, fileType, m_options.symbolMode, this);
+            XModel_XInfoDBSymbol *pModel = new XModel_XInfoDBSymbol(m_pXInfoDB, fileType, m_options.symbolMode, this);
 
             ui->tableViewSymbols->setCustomModel(pModel, true);
             // XBinary::MODE modeAddress = XBinary::getModeOS();
@@ -90,10 +90,10 @@ void XSymbolsWidget::_hex()
         qint32 nRow = ui->tableViewSymbols->currentIndex().row();
 
         if (nRow != -1) {
-            QModelIndex index = ui->tableViewSymbols->selectionModel()->selectedIndexes().at(XModel_XSymbol::COLUMN_NUMBER);
+            QModelIndex index = ui->tableViewSymbols->selectionModel()->selectedIndexes().at(XModel_XInfoDBSymbol::COLUMN_NUMBER);
 
-            qint64 nOffset = ui->tableViewSymbols->model()->data(index, Qt::UserRole + XModel_XSymbol::USERROLE_OFFSET).toLongLong();
-            qint64 nSize = ui->tableViewSymbols->model()->data(index, Qt::UserRole + XModel_XSymbol::USERROLE_SIZE).toLongLong();
+            qint64 nOffset = ui->tableViewSymbols->model()->data(index, Qt::UserRole + XModel_XInfoDBSymbol::USERROLE_OFFSET).toLongLong();
+            qint64 nSize = ui->tableViewSymbols->model()->data(index, Qt::UserRole + XModel_XInfoDBSymbol::USERROLE_SIZE).toLongLong();
 
             emit followLocation(nOffset, XBinary::LT_OFFSET, nSize, XOptions::WIDGETTYPE_HEX);
         }
@@ -106,10 +106,10 @@ void XSymbolsWidget::_disasm()
         qint32 nRow = ui->tableViewSymbols->currentIndex().row();
 
         if (nRow != -1) {
-            QModelIndex index = ui->tableViewSymbols->selectionModel()->selectedIndexes().at(XModel_XSymbol::COLUMN_NUMBER);
+            QModelIndex index = ui->tableViewSymbols->selectionModel()->selectedIndexes().at(XModel_XInfoDBSymbol::COLUMN_NUMBER);
 
-            XADDR nAddress = ui->tableViewSymbols->model()->data(index, Qt::UserRole + XModel_XSymbol::USERROLE_ADDRESS).toULongLong();
-            qint64 nSize = ui->tableViewSymbols->model()->data(index, Qt::UserRole + XModel_XSymbol::USERROLE_SIZE).toLongLong();
+            XADDR nAddress = ui->tableViewSymbols->model()->data(index, Qt::UserRole + XModel_XInfoDBSymbol::USERROLE_ADDRESS).toULongLong();
+            qint64 nSize = ui->tableViewSymbols->model()->data(index, Qt::UserRole + XModel_XInfoDBSymbol::USERROLE_SIZE).toLongLong();
 
             emit followLocation(nAddress, XBinary::LT_ADDRESS, nSize, XOptions::WIDGETTYPE_DISASM);
         }
@@ -149,7 +149,7 @@ void XSymbolsWidget::viewSelection()
         QModelIndexList listIndexes = pSelectionModel->selectedIndexes();
 
         if (listIndexes.count()) {
-            QModelIndex indexNumber = listIndexes.at(XModel_XSymbol::COLUMN_NUMBER);
+            QModelIndex indexNumber = listIndexes.at(XModel_XInfoDBSymbol::COLUMN_NUMBER);
             XADDR nVirtualAddress = ui->tableViewSymbols->model()->data(indexNumber, Qt::UserRole + XModel::USERROLE_ADDRESS).toULongLong();
             qint64 nOffset = ui->tableViewSymbols->model()->data(indexNumber, Qt::UserRole + XModel::USERROLE_OFFSET).toULongLong();
             qint64 nSize = ui->tableViewSymbols->model()->data(indexNumber, Qt::UserRole + XModel::USERROLE_SIZE).toLongLong();
