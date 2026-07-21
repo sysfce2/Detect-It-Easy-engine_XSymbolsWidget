@@ -5,13 +5,13 @@ HEADERS += \
     $$PWD/dialogbookmarks.h \
     $$PWD/dialogxsymbols.h \
     $$PWD/xsymbolswidget.h \
-    $$PWD/xmodel_xsymbol.h
+    $$PWD/xmodel_xinfodbsymbol.h
 
 SOURCES += \
     $$PWD/dialogbookmarks.cpp \
     $$PWD/dialogxsymbols.cpp \
     $$PWD/xsymbolswidget.cpp \
-    $$PWD/xmodel_xsymbol.cpp
+    $$PWD/xmodel_xinfodbsymbol.cpp
 
 FORMS += \
     $$PWD/dialogbookmarks.ui \

@@ -27,7 +27,7 @@
 
 #include "xinfodb.h"
 #include "xshortcutswidget.h"
-#include "xmodel_xsymbol.h"
+#include "xmodel_xinfodbsymbol.h"
 #include "xdialogprocess.h"
 #include "xinfodbtransfer.h"
 
