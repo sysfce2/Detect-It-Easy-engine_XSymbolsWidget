@@ -38,12 +38,18 @@ DialogBookmarks::~DialogBookmarks()
 
 void DialogBookmarks::setData(XInfoDB *pXInfoDB, qint64 nOffset, XADDR nAddress, qint64 nSize)
 {
+    if (m_pXInfoDB) {
+        disconnect(m_pXInfoDB, SIGNAL(reloadViewSignal()), this, SLOT(reload()));
+    }
+
     m_pXInfoDB = pXInfoDB;
     m_nOffset = nOffset;
     m_nAddress = nAddress;
     m_nSize = nSize;
 
-    connect(m_pXInfoDB, SIGNAL(reloadViewSignal()), this, SLOT(reload()));
+    if (m_pXInfoDB) {
+        connect(m_pXInfoDB, SIGNAL(reloadViewSignal()), this, SLOT(reload()), Qt::UniqueConnection);
+    }
 
     reload();
 }
@@ -66,11 +72,11 @@ void DialogBookmarks::reload()
 
     QVector<XInfoDB::BOOKMARKRECORD> listRecord;
 
-    if (m_nOffset != -1) {
+    if (m_pXInfoDB && (m_nOffset != -1)) {
         listRecord.append(m_pXInfoDB->getBookmarkRecords(m_nOffset, XBinary::LT_OFFSET, m_nSize));
     }
 
-    if (m_nAddress != (XADDR)-1) {
+    if (m_pXInfoDB && (m_nAddress != (XADDR)-1)) {
         listRecord.append(m_pXInfoDB->getBookmarkRecords(m_nAddress, XBinary::LT_ADDRESS, m_nSize));
     }
 
@@ -149,7 +155,7 @@ void DialogBookmarks::pushButtonColorSlot()
 {
     QPushButton *pPushButton = qobject_cast<QPushButton *>(sender());
 
-    if (pPushButton) {
+    if (pPushButton && m_pXInfoDB) {
         QString sUUID = pPushButton->property("UUID").toString();
         QString sColor = pPushButton->property("COLOR").toString();
 
@@ -172,7 +178,7 @@ void DialogBookmarks::pushButtonRemoveSlot()
 {
     QPushButton *pPushButton = qobject_cast<QPushButton *>(sender());
 
-    if (pPushButton) {
+    if (pPushButton && m_pXInfoDB) {
         QString sUUID = pPushButton->property("UUID").toString();
 
         m_pXInfoDB->removeBookmarkRecord(sUUID);
@@ -184,6 +190,10 @@ void DialogBookmarks::pushButtonRemoveSlot()
 
 void DialogBookmarks::lineEditTextChangedSlot(const QString &sText)
 {
+    if (!m_pXInfoDB) {
+        return;
+    }
+
     const bool bBlocked1 = m_pXInfoDB->blockSignals(true);
 
     QLineEdit *pLineEdit = qobject_cast<QLineEdit *>(sender());
@@ -200,9 +210,10 @@ void DialogBookmarks::lineEditTextChangedSlot(const QString &sText)
 void DialogBookmarks::on_tableWidgetBookmarks_currentCellChanged(int nCurrentRow, int nCurrentColumn, int nPreviousRow, int nPreviousColumn)
 {
     Q_UNUSED(nCurrentColumn)
+    Q_UNUSED(nPreviousRow)
     Q_UNUSED(nPreviousColumn)
 
-    if (nPreviousRow != -1) {
+    if (nCurrentRow != -1) {
         QTableWidgetItem *pItem = ui->tableWidgetBookmarks->item(nCurrentRow, 0);
 
         if (pItem) {
@@ -223,7 +234,7 @@ void DialogBookmarks::on_tableWidgetBookmarks_itemClicked(QTableWidgetItem *pIte
         if (_pItem) {
             quint64 nLocation = _pItem->data(Qt::UserRole + 0).toULongLong();
             quint64 nSize = _pItem->data(Qt::UserRole + 1).toLongLong();
-            quint32 nLocType = pItem->data(Qt::UserRole + 2).toLongLong();
+            quint32 nLocType = _pItem->data(Qt::UserRole + 2).toLongLong();
 
             emit currentLocationChanged(nLocation, nLocType, nSize);
         }

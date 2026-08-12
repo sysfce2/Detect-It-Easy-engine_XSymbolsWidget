@@ -28,6 +28,9 @@ XSymbolsWidget::XSymbolsWidget(QWidget *pParent) : XShortcutsWidget(pParent), ui
 
     m_pDevice = nullptr;
     m_pXInfoDB = nullptr;
+    m_options = {};
+    ui->toolButtonReload->setEnabled(false);
+    ui->toolButtonSaveSymbols->setEnabled(false);
 }
 
 XSymbolsWidget::~XSymbolsWidget()
@@ -40,6 +43,15 @@ void XSymbolsWidget::setData(QIODevice *pDevice, const OPTIONS &options, XInfoDB
     m_pDevice = pDevice;
     m_pXInfoDB = pXInfoDB;
     m_options = options;
+
+    const bool bHasData = m_pDevice && m_pXInfoDB;
+    ui->toolButtonReload->setEnabled(bHasData);
+    ui->toolButtonSaveSymbols->setEnabled(bHasData);
+
+    if (!bHasData) {
+        ui->tableViewSymbols->setCustomModel(nullptr, true);
+        return;
+    }
 
     if (pDevice) {
         XBinary::FT fileType = XFormats::setFileTypeComboBox(options.fileType, m_pDevice, ui->comboBoxType, XBinary::TL_OPTION_SYMBOLS);
@@ -56,7 +68,7 @@ void XSymbolsWidget::setData(QIODevice *pDevice, const OPTIONS &options, XInfoDB
 
 void XSymbolsWidget::reload()
 {
-    if (m_pXInfoDB) {
+    if (m_pDevice && m_pXInfoDB) {
         XBinary::FT fileType = (XBinary::FT)(ui->comboBoxType->currentData().toUInt());
         // XBinary::DM disasmMode = g_options.disasmMode;
 
@@ -123,6 +135,10 @@ void XSymbolsWidget::registerShortcuts(bool bState)
 
 void XSymbolsWidget::on_toolButtonSaveSymbols_clicked()
 {
+    if (!m_pDevice || !ui->tableViewSymbols->getProxyModel()) {
+        return;
+    }
+
     XShortcutsWidget::saveTableModel(ui->tableViewSymbols->getProxyModel(), XBinary::getResultFileName(m_pDevice, QString("%1.txt").arg(tr("Symbols"))));
 }
 
@@ -171,6 +187,10 @@ void XSymbolsWidget::on_toolButtonReload_clicked()
 
 void XSymbolsWidget::analyze()
 {
+    if (!m_pDevice || !m_pXInfoDB) {
+        return;
+    }
+
     XBinary::FT fileType = (XBinary::FT)(ui->comboBoxType->currentData().toUInt());
 
     XInfoDBTransfer::OPTIONS options = {};
